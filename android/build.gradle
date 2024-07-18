@@ -1,6 +1,5 @@
 group 'com.banuba.ve.sdk.flutter.plugin.ve_sdk_flutter'
 version '0.1.0'
-
 allprojects {
     repositories {
         google()
