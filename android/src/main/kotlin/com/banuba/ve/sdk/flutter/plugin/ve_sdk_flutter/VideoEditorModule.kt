@@ -9,6 +9,7 @@ import com.banuba.sdk.cameraui.data.CameraRecordingModesProvider
 import com.banuba.sdk.cameraui.data.EditorPipLayoutSettings
 import com.banuba.sdk.cameraui.data.PipLayoutProvider
 import com.banuba.sdk.cameraui.ui.RecordMode
+import com.banuba.sdk.core.domain.DraftConfig
 import com.banuba.sdk.core.ui.ext.dimen
 import com.banuba.sdk.effectplayer.adapter.BanubaEffectPlayerKoinModule
 import com.banuba.sdk.export.di.VeExportKoinModule
@@ -21,13 +22,14 @@ import com.banuba.sdk.ve.di.VeSdkKoinModule
 import com.banuba.sdk.ve.flow.di.VeFlowKoinModule
 import com.banuba.sdk.veui.data.EditorConfig
 import com.banuba.sdk.veui.di.VeUiSdkKoinModule
+import com.banuba.sdk.veui.domain.TrimmerAction
+import com.banuba.sdk.veui.ui.trimmer.TrimmerActionsProvider
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 class VideoEditorModule {
-
     fun initialize(application: Application) {
         startKoin {
             androidContext(application)
@@ -38,7 +40,6 @@ class VideoEditorModule {
                 VeExportKoinModule().module,
                 VePlaybackSdkKoinModule().module,
 
-                // IMPORTANT! ArCloudKoinModule should be set before TokenStorageKoinModule to get effects from the cloud
                 ArCloudKoinModule().module,
 
                 VeUiSdkKoinModule().module,
@@ -68,19 +69,26 @@ private class SampleIntegrationVeKoinModule {
                 ioDispatcher = get(named("ioDispatcher"))
             )
         }
+        single<DraftConfig> { DraftConfig.DISABLED }
+
         single<CameraConfig> {
             CameraConfig(
                 supportsGallery = false,
                 supportsExternalMusic = false,
                 takePhotoOnTap = false,
-                supportsMuteMic = false,
                 videoDurations = supportedDurations,
                 minRecordedTotalVideoDurationMs = minVideoDuration,
                 maxRecordedTotalVideoDurationMs = maxVideoDuration,
                 isStartFrontFacingFirst = true,
-
                 isSaveLastCameraFacing = false,
             )
+        }
+
+        single<TrimmerActionsProvider> {
+            object : TrimmerActionsProvider {
+                override fun provide(hasPipAction: Boolean): List<TrimmerAction> =
+                    TrimmerAction.entries.filter { it != TrimmerAction.ROTATE }
+            }
         }
 
         single<EditorConfig> {
@@ -95,14 +103,12 @@ private class SampleIntegrationVeKoinModule {
             PlayerScaleType.FIT_SCREEN_HEIGHT
         }
         single<AspectsProvider> {
-            object : AspectsProvider{
+            object : AspectsProvider {
                 override var availableAspects: List<AspectSettings> = listOf()
-                override fun provide(): AspectsProvider.AspectsData {
-                    return AspectsProvider.AspectsData(
-                        allAspects = availableAspects,
-                        default = EditorAspectSettings.Original()
-                    )
-                }
+                override fun provide(): AspectsProvider.AspectsData = AspectsProvider.AspectsData(
+                    allAspects = availableAspects,
+                    default = EditorAspectSettings.Original()
+                )
             }
         }
         single<CameraRecordingModesProvider> {
@@ -115,24 +121,21 @@ private class SampleIntegrationVeKoinModule {
                 override fun provide(
                     insetsOffset: Int,
                     screenSize: Size
-                ): List<EditorPipLayoutSettings> {
-                    val context = androidContext()
-                    return listOf(
+                ): List<EditorPipLayoutSettings> =
+                    listOf(
                         EditorPipLayoutSettings.LeftRight(),
                         EditorPipLayoutSettings.Floating(
-                            context = context,
+                            context = androidContext(),
                             physicalScreenSize = screenSize,
-                            topOffsetPx = context.dimen(R.dimen.pip_floating_top_offset) + insetsOffset
+                            topOffsetPx = androidContext().dimen(R.dimen.pip_floating_top_offset) + insetsOffset
                         ),
                         EditorPipLayoutSettings.TopBottom(),
                         EditorPipLayoutSettings.React(
-                            context = context,
+                            context = androidContext(),
                             physicalScreenSize = screenSize,
-                            topOffsetPx = context.dimen(R.dimen.pip_react_top_offset) + insetsOffset
+                            topOffsetPx = androidContext().dimen(R.dimen.pip_react_top_offset) + insetsOffset
                         ),
                     )
-
-                }
             }
         }
     }
