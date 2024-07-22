@@ -12,6 +12,7 @@ import com.banuba.sdk.cameraui.ui.RecordMode
 import com.banuba.sdk.core.domain.DraftConfig
 import com.banuba.sdk.core.ui.ext.dimen
 import com.banuba.sdk.effectplayer.adapter.BanubaEffectPlayerKoinModule
+import com.banuba.sdk.export.data.ExportParamsProvider
 import com.banuba.sdk.export.di.VeExportKoinModule
 import com.banuba.sdk.playback.PlayerScaleType
 import com.banuba.sdk.playback.di.VePlaybackSdkKoinModule
@@ -21,7 +22,10 @@ import com.banuba.sdk.ve.data.aspect.AspectsProvider
 import com.banuba.sdk.ve.di.VeSdkKoinModule
 import com.banuba.sdk.ve.flow.di.VeFlowKoinModule
 import com.banuba.sdk.veui.data.EditorConfig
+import com.banuba.sdk.veui.data.stickers.GifPickerConfigurations
+import com.banuba.sdk.veui.data.stickers.GifPickerMode
 import com.banuba.sdk.veui.di.VeUiSdkKoinModule
+import com.banuba.sdk.veui.domain.CoverProvider
 import com.banuba.sdk.veui.domain.TrimmerAction
 import com.banuba.sdk.veui.ui.trimmer.TrimmerActionsProvider
 import org.koin.android.ext.koin.androidContext
@@ -59,9 +63,10 @@ class VideoEditorModule {
  * these classes fully depends on your requirements
  */
 private class SampleIntegrationVeKoinModule {
-    private val minVideoDuration: Long = 20 * 1000
+    private val minVideoDuration: Long = 5 * 1000
     private val maxVideoDuration: Long = 180 * 1000
-    private val supportedDurations = listOf(minVideoDuration, 60_000, 120_000, maxVideoDuration)
+    private val supportedDurations =
+        listOf(minVideoDuration, 30_000, 60_000, 120_000, maxVideoDuration)
     val module = module {
         single<ArEffectsRepositoryProvider>(createdAtStart = true) {
             ArEffectsRepositoryProvider(
@@ -73,10 +78,13 @@ private class SampleIntegrationVeKoinModule {
 
         single<CameraConfig> {
             CameraConfig(
+                banubaColorEffectsAssetsPath = null,
                 supportsGallery = false,
                 supportsExternalMusic = false,
                 takePhotoOnTap = false,
                 videoDurations = supportedDurations,
+                supportsMuteMic = false,
+                supportsSpeedRecording = false,
                 minRecordedTotalVideoDurationMs = minVideoDuration,
                 maxRecordedTotalVideoDurationMs = maxVideoDuration,
                 isStartFrontFacingFirst = true,
@@ -87,16 +95,29 @@ private class SampleIntegrationVeKoinModule {
         single<TrimmerActionsProvider> {
             object : TrimmerActionsProvider {
                 override fun provide(hasPipAction: Boolean): List<TrimmerAction> =
-                    TrimmerAction.entries.filter { it != TrimmerAction.ROTATE }
+                    TrimmerAction.entries.filter {
+                        when (it) {
+                            TrimmerAction.ROTATE -> false
+                            TrimmerAction.ADJUST_VOLUME -> hasPipAction
+                            else -> true
+                        }
+                    }
             }
         }
+        single<CoverProvider> { CoverProvider.NONE }
 
         single<EditorConfig> {
             EditorConfig(
+                editorBanubaColorEffectsAssetsPath = null,
                 supportsGalleryOnCover = false,
                 supportsGalleryOnTrimmer = false,
+                editorSupportsTimeEffects = false,
+                editorSupportsMaskEffects = false,
                 minTotalVideoDurationMs = minVideoDuration,
                 maxTotalVideoDurationMs = maxVideoDuration,
+                supportsTextOnVideo = false,
+                editorSupportsMusicMixer = false,
+                supportsTextStyles = false,
             )
         }
         factory<PlayerScaleType>(named("editorVideoScaleType")) {
@@ -115,6 +136,24 @@ private class SampleIntegrationVeKoinModule {
             object : CameraRecordingModesProvider {
                 override var availableModes: Set<RecordMode> = setOf(RecordMode.Video)
             }
+        }
+
+        single(named("giphyApiKey")) {
+            androidContext().getString(R.string.giphy_api_key)
+        }
+
+        single<GifPickerConfigurations> {
+            GifPickerConfigurations(
+                giphyRating = "PG13",
+                mode = GifPickerMode.Search,
+                giphyApiKey = androidContext().getString(R.string.giphy_api_key),
+            )
+        }
+        factory<ExportParamsProvider> {
+            CustomExportParamsProvider(
+                exportDir = get(named("exportDir")),
+                mediaFileNameHelper = get(),
+            )
         }
         single<PipLayoutProvider> {
             object : PipLayoutProvider {
