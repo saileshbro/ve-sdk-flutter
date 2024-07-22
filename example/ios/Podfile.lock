@@ -1,6 +1,5 @@
 PODS:
   - BanubaARCloudSDK (1.35.6)
-  - BanubaAudioBrowserSDK (1.35.6)
   - BanubaLicenseServicingSDK (1.35.6)
   - BanubaSDK (1.35.6):
     - BNBBackground (~> 1.12.0)
@@ -16,7 +15,6 @@ PODS:
   - BanubaSDKServicing (1.35.6)
   - BanubaSDKSimple (1.35.6)
   - BanubaUtilities (1.35.6)
-  - BanubaVideoEditorGallerySDK (1.35.6)
   - BanubaVideoEditorSDK (1.35.6)
   - BNBBackground (1.12.0):
     - BNBEffectPlayer (= 1.12.0)
@@ -57,13 +55,11 @@ PODS:
     - Flutter
   - ve_sdk_flutter (0.0.1):
     - BanubaARCloudSDK (= 1.35.6)
-    - BanubaAudioBrowserSDK (= 1.35.6)
     - BanubaLicenseServicingSDK (= 1.35.6)
     - BanubaSDK (= 1.35.6)
     - BanubaSDKServicing (= 1.35.6)
     - BanubaSDKSimple (= 1.35.6)
     - BanubaUtilities (= 1.35.6)
-    - BanubaVideoEditorGallerySDK (= 1.35.6)
     - BanubaVideoEditorSDK (= 1.35.6)
     - BNBLicenseUtils (= 1.35.6)
     - Flutter
@@ -84,13 +80,11 @@ DEPENDENCIES:
 SPEC REPOS:
   https://github.com/Banuba/specs.git:
     - BanubaARCloudSDK
-    - BanubaAudioBrowserSDK
     - BanubaLicenseServicingSDK
     - BanubaSDK
     - BanubaSDKServicing
     - BanubaSDKSimple
     - BanubaUtilities
-    - BanubaVideoEditorGallerySDK
     - BanubaVideoEditorSDK
     - BNBLicenseUtils
     - VEEffectsSDK
@@ -120,13 +114,11 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   BanubaARCloudSDK: ec2661633b86fc968d460c0ad3ae55ddc82e52b0
-  BanubaAudioBrowserSDK: c91b2d628dde4072017c42a4adcdf0f20950e6e8
   BanubaLicenseServicingSDK: 9f449a604b805450d05e74ba6fb2b1caa59f34dd
   BanubaSDK: 26ad9ffc3c0afe0ea4342d5861e0e2273b6233c3
   BanubaSDKServicing: edc34076b9c2ae19fa35ca22fd5122f1fe196357
   BanubaSDKSimple: ef895af57f9bdd9e9b780a1db59eba2715b2bfbf
   BanubaUtilities: 3db6d5c90be0104a109f2cf21efa75a7723e4f02
-  BanubaVideoEditorGallerySDK: 1299150b232538adb8a7cd030bd5536a4b03d91e
   BanubaVideoEditorSDK: d1744890428d5c0530a2aedef5d9c421d65506a1
   BNBBackground: 63273588d277006a6a395b0ddd12027413f4554a
   BNBEffectPlayer: 02f868c31b2490bcc866369037dfe372eb84ba3f
@@ -142,7 +134,7 @@ SPEC CHECKSUMS:
   BNBVisualClip: 70f4ab0ab209ea96a0185a1a91148e852e35b558
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   image_picker_ios: b545a5f16c0fa88e3ecbbce3ed4de45567a8ec18
-  ve_sdk_flutter: b9327eee56a6bef65e2dad8138d742d70b6aa72d
+  ve_sdk_flutter: b71cd30277e78dc16cee0fa0ee0d507b4d9c59b9
   VEEffectsSDK: 977537e9ec094020ecc04bb276333e55daf647de
   VEExportSDK: e5f00a8864e6c5e2cd804873d3493ac2217a8cf1
   VEPlaybackSDK: c7a9cc9d7c7f3e007cbb1ebd807668fbd63f31d9

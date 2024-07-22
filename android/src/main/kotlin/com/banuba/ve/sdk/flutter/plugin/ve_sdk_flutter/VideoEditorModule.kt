@@ -76,6 +76,7 @@ private class SampleIntegrationVeKoinModule {
         }
         single<DraftConfig> { DraftConfig.DISABLED }
 
+
         single<CameraConfig> {
             CameraConfig(
                 banubaColorEffectsAssetsPath = null,
